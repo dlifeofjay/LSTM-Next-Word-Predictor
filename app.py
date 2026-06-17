@@ -76,13 +76,19 @@ def prediction(text, word_to_id, sequence, temp):
             # Get prediction
             output = model(input_tensor)
             
-            # Applying temperature scaling and top k sampling to avoid repetitive generation loops
+            # Applying temperature for output randomness and pick 1 out of top 5
             temperature = temp
             k = 5
+
+            # Divide by temperature
             logits = output / temperature
+            # Apply softmax
             probs = torch.softmax(logits, dim=1)
             
+            # Select top 5
             top_probs, top_indices = torch.topk(probs, k=k, dim=1)
+
+            # Randomly pick 1 out of top 5
             sample_idx = torch.multinomial(top_probs, 1).item()
             next_token_id = top_indices[0][sample_idx].item()
             
@@ -133,7 +139,7 @@ st.image(image, caption="Training Loss over Epochs")
 # Analysis
 with st.expander("Analysis and Next Steps"):
     st.write("**Key Observation:**")
-    st.write("This model suffered from **severe overfitting** even after continuous hyperparameter tuning.")
+    st.write("This model suffered from underfitting which led us to increase the epoch to 100 now it suffered from **severe Overfitting**")
 
     st.write("**Next Steps:**")
     st.write("- Gather much more text data for large scale training to improve accuracy")
