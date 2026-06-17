@@ -52,7 +52,7 @@ def clean_text(text):
 
 # Convert them to tokens
 
-def prediction(text, word_to_id, sequence):
+def prediction(text, word_to_id, sequence, temp):
     """
     Take cleaned text, convert to tokens,
     predict and add the predicted word to
@@ -70,14 +70,14 @@ def prediction(text, word_to_id, sequence):
             # Take last 30 tokens (or all if less than 30)
             input_tokens = tok[-30:]
             
-            # Convert to tensor with batch dimension: [1, seq_len]
+            # Convert to tensor
             input_tensor = torch.tensor([input_tokens], dtype=torch.long)
             
             # Get prediction
             output = model(input_tensor)
             
             # Applying temperature scaling and top k sampling to avoid repetitive generation loops
-            temperature = 0.8
+            temperature = temp
             k = 5
             logits = output / temperature
             probs = torch.softmax(logits, dim=1)
@@ -101,10 +101,15 @@ def prediction(text, word_to_id, sequence):
 # Input
 text = st.text_input("Enter your prompt", placeholder="e.g. Disadvantage of LSTM")
 
-col1, col2 = st.columns([3, 1])
+col1, col2, col3 = st.columns(3)
+
 with col1:
-    sequence = st.slider("Words to generate", min_value=5, max_value=50, value=30, step=5)
+    sequence = st.slider("Number of words to generate", min_value=5, max_value=50, value=30, step=5)
+
 with col2:
+    temperature = st.slider("Generation flexibility (temperature)", min_value=0.1, max_value=1.0, value=0.7, step=0.1)
+
+with col3:
     st.write("")  # spacing
     generate = st.button("Generate", use_container_width=True)
 
@@ -112,7 +117,7 @@ with col2:
 if generate:
     if text.strip():
         text_list = clean_text(text)
-        result = prediction(text_list, tokenizer, sequence)
+        result = prediction(text_list, tokenizer, sequence, temperature)
         st.success(result)
     else:
         st.error("Please write something first.")
