@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import string
 from PIL import Image
+import re
 
 st.set_page_config(page_title="LSTM Next Word Predictor", layout="centered")
 
@@ -34,13 +35,19 @@ st.write("Enter words relating to machine learning, LSTM and the "
 
 def clean_text(text):
     """
-    This function aims to clean the text extracted
+    Cleans the input text by removing PDF ligatures, stripping academic citations,
+    and removing punctuation.
     """
+    # Standardize common PDF ligatures
+    text = text.replace("ﬁ", "fi").replace("ﬀ", "ff").replace("ﬂ", "fl").replace("ﬃ", "ffi")
+    
+    # Strip academic citations like [1] or [12, 15]
+    text = re.sub(r'\[\d+(?:,\s*\d+)*\]', '', text)
+    
     clean = str.maketrans('', '', string.punctuation)
     text = text.translate(clean)
     text = text.replace("\n", " ").lower().split()
 
-    # Expecting texts splitted in list
     return text
 
 # Convert them to tokens
@@ -68,7 +75,16 @@ def prediction(text, word_to_id, sequence):
             
             # Get prediction
             output = model(input_tensor)
-            next_token_id = output.argmax(dim=1).item()
+            
+            # Applying temperature scaling and top k sampling to avoid repetitive generation loops
+            temperature = 0.8
+            k = 5
+            logits = output / temperature
+            probs = torch.softmax(logits, dim=1)
+            
+            top_probs, top_indices = torch.topk(probs, k=k, dim=1)
+            sample_idx = torch.multinomial(top_probs, 1).item()
+            next_token_id = top_indices[0][sample_idx].item()
             
             if next_token_id == 0:        # UKN token
                 break
