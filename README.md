@@ -10,9 +10,9 @@ A from-scratch language model that predicts the next word in a sequence using an
 
 ## ✨ Motivation
 
-Modern LLMs are built on Transformers, but understanding **sequential models like LSTMs** is foundational to appreciating *why* attention mechanisms were needed. This project builds a complete, minimal language model pipeline from scratch — tokenizer, model, training, and deployment — to explore how recurrent networks handle next-word prediction and where they fall short.
+I built this project to explore how early neural language models worked before Transformers took over. While modern LLMs are built on Transformers, understanding **sequential models like LSTMs** is foundational to appreciating *why* attention mechanisms were needed in the first place. 
 
-The training corpus focuses on **machine learning concepts**, the **LSTM architecture**, and the **"Attention Is All You Need"** paper.
+This project implements a complete, minimal language model pipeline from scratch—from text preprocessing and tokenization to model training and deployment. The training corpus consists of text extracted from academic papers, focusing on **machine learning concepts**, the **LSTM architecture**, and the **"Attention Is All You Need"** paper.
 
 ---
 
@@ -83,31 +83,30 @@ Open `Notebook/Lstm One Word Predictor.ipynb` in Jupyter and run all cells. The 
 
 ---
 
-## 📈 Results
+## 📈 Training & Observations
 
 ### Training Loss
-
-The model was trained for **100 epochs** with cross-entropy loss. Training loss decreased steadily from **~7.0 to ~1.0**.
+The model was trained for **100 epochs** using cross-entropy loss, with the loss decreasing steadily from **~7.0 to ~1.0**. 
 
 <p align="center">
   <img src="Loss plot.png" alt="Training loss curve" width="520">
 </p>
 
-### Limitations
-
-- **Overfitting** — Only training loss was tracked; the model likely memorised patterns from the small corpus rather than learning generalisable language structure.
-- **Small vocabulary** — 2,181 tokens with a custom word-level tokenizer means many inputs produce `<unk>` tokens.
-- **Short context** — The model uses the last 30 tokens as context, and a single LSTM layer struggles with long-range dependencies.
+### Key Observations & Limitations
+While analyzing the model's performance, I noticed a few major bottlenecks:
+* **Severe Overfitting:** Even with continuous hyperparameter tuning (like adding dropout and adjusting dimensions), the model heavily overfits the training corpus. Because it only trained on a few research papers, it tends to memorize exact sentences rather than learning generalizable language patterns.
+* **Basic Tokenization:** Since I built the word-level tokenizer from scratch, it has a tiny vocabulary of only 2,181 words. Any words outside of this small set end up as `<unk>` (unknown) tokens, which limits how the model can respond to custom prompts.
+* **Short Context Window:** The model only uses the last 30 tokens as context. A single-layer LSTM struggles to capture long-range dependencies across sentences.
 
 ---
 
-## 🔮 Future Improvements
+## 🔮 Next Steps & Future Improvements
 
-- [ ] Add a **validation split** and plot train vs. val loss to quantify overfitting
-- [ ] Replace the custom tokenizer with a **sub-word tokenizer** (BPE / SentencePiece)
-- [ ] Experiment with **multi-layer LSTMs** or **GRUs**
-- [ ] Add **temperature sampling** and **top-k/top-p** decoding for more varied outputs
-- [ ] Benchmark with **perplexity** for a quantitative evaluation metric
+To address these limitations, I want to focus on:
+- [ ] **More Sophisticated Text Cleaning & Preprocessing:** The PDF extraction contains a lot of noisy characters and page headers. Writing a cleaner parser will help improve data quality.
+- [ ] **Using an Efficient, Open-Source Tokenizer:** Replacing the custom word-level tokenizer with a sub-word tokenizer (like Byte-Pair Encoding or SentencePiece) to handle unseen words better and eliminate `<unk>` tokens.
+- [ ] **Adding a Validation Split:** Tracking and plotting validation loss alongside training loss to better quantify the overfitting.
+- [ ] **Improving Decoding Strategy:** Adding temperature sampling and top-k/top-p filtering during prediction in `app.py` for more varied and creative text generation.
 
 ---
 
