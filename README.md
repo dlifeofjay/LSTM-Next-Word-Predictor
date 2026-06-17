@@ -41,15 +41,16 @@ flowchart LR
 
 ```
 Language Model with LSTM/
-├── Lstm One Word Predictor.ipynb   # Training notebook (data prep, training loop)
-├── app.py                          # Streamlit web app for inference
+├── Notebook/
+│   └── Lstm One Word Predictor.ipynb   # Training notebook (data prep, training loop)
+├── app.py                              # Streamlit web app for inference
 ├── README.md
-├── Loss plot.png                   # Training loss curve
+├── Loss plot.png                       # Training loss curve
 ├── Artifacts/
-│   ├── mini_lm.pt                  # Saved model weights
-│   └── tokenizer.json              # Word-to-ID mapping (custom tokenizer)
+│   ├── mini_lm.pt                      # Saved model weights
+│   └── tokenizer.json                  # Word-to-ID mapping (custom tokenizer)
 └── src/
-    └── architecture.py             # WordPred model definition (PyTorch)
+    └── architecture.py                 # WordPred model definition (PyTorch)
 ```
 
 ---
@@ -72,7 +73,7 @@ The app will open at `http://localhost:8501`. Enter a prompt related to machine 
 
 ### Train from scratch
 
-Open `Lstm One Word Predictor.ipynb` in Jupyter and run all cells. The notebook handles:
+Open `Notebook/Lstm One Word Predictor.ipynb` in Jupyter and run all cells. The notebook handles:
 
 1. Text extraction & cleaning
 2. Tokenizer construction
