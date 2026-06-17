@@ -11,7 +11,7 @@ st.set_page_config(page_title="LSTM Next Word Predictor", layout="centered")
 
 # Load artifacts
 
-model = WordPred(2181)
+model = WordPred(2697)
 loaded_weights = torch.load(r"Artifacts/mini_lm.pt", weights_only=True)
 model.load_state_dict(loaded_weights)
 model.eval()
@@ -29,7 +29,7 @@ st.divider()
 
 st.subheader("Generate Text")
 st.write("Enter words relating to machine learning, LSTM and the "
-         "*Attention Is All You Need* paper — the model tries to complete the sentence.")
+         "*Attention Is All You Need* paper - the model tries to complete the sentence.")
 
 # Clean text
 
