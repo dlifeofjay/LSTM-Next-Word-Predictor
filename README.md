@@ -87,8 +87,7 @@ The model was trained for **100 epochs** on a custom corpus extracted from the o
 
 ## 🔮 Planned Improvements
 
-- **Better Preprocessing:** Clean up page headers, citation numbers, and extraction noise from the raw PDFs to improve dataset quality.
-- **Sub-word Tokenization:** Switch to Byte-Pair Encoding (BPE) or WordPiece to handle out-of-vocabulary words without relying on `<unk>` tokens.
-- **Validation Splitting:** Add a validation dataset during training to plot train vs. val loss and properly monitor overfitting.
-- **Inference Sampling:** Implement temperature scaling and top-k / top-p decoding in the Streamlit app to generate less repetitive text.
+- Gather much more text data for large scale training to improve accuracy
+- More sophisticated text cleaning and preprocessing
+- Use a more efficient open-source tokenizer
 
